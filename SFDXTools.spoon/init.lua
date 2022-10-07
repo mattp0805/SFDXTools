@@ -1,7 +1,6 @@
 obj = {name = "SFDXTools",
         version = "1.0.0",
         author = { name = "Matt Port", email = "mattp0@duck.com" }
-        description = ''
         }
 function obj:init()
      w = {}
