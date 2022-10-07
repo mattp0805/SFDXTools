@@ -4,11 +4,11 @@ obj.name = "SFDXTools"
 obj.version = "1.0.1"
 obj.author = { name = "Matt Port", email = "mattp0@duck.com" }
 
-obj.SFDXPATH = '/usr/local/bin/sfdx'
+obj.SFDXPATH = "/usr/local/bin/sfdx"
 
 
 function obj:init()
-     w = {}
+    w = {}
     self.__index = self
     return setmetatable(w , self )
 end
@@ -19,9 +19,13 @@ function obj:startDialog()
     print(text)
     if text == "list" then
             t = nil
-            t = hs.task.new(this.SFDXPATH, function(exitCode, stdOut, stdErr) 
+            t = hs.task.new(
+            -- launch path    
+            this.SFDXPATH, 
+            --callback function
+            function(exitCode, stdOut, stdErr) 
                 -- manipulate string before output
-                
+                alertString = stdOut
                 hs.alert.show(alertString,
                 {
                     strokeWidth  = 2,
@@ -41,8 +45,11 @@ function obj:startDialog()
 
                 )    
                 end, 
+                -- streamCallback
                 function(...) return false end,
-                {"force:org:list"})
+                -- args for sfdx
+                {"force:org:list", "--json"})
+
                 t:start()
                 
     else
@@ -54,9 +61,7 @@ function obj:bindHotKeys(mapping)
     spec = mapping[1]
     key = mapping[2]
     if hs.hotkey.assignable(spec,key) == true then
-        hs.hotkey.bind(spec, key, function()
-            obj:startDialog()
-        end)
+        hs.hotkey.bind(spec, key, obj:startDialog())
     else 
         print("Could not bind keys, try a different combination")
     end
