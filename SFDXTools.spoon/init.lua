@@ -58,6 +58,7 @@ function obj:startDialog()
     button, text = hs.dialog.textPrompt("SFDX", "Enter org to open", "list", "Open", "Cancel", false)
     if button == 'Open' then
         if text == 'list' then
+
             print(text)
             print(button)
                 
@@ -65,7 +66,7 @@ function obj:startDialog()
                 t:start()    
         else
                 
-                t = hs.task.new(obj.SFDXPATH, sfdxOpen, {'force:org:open', text)
+                t = hs.task.new(obj.SFDXPATH, sfdxOpen, {'force:org:open', text})
                 t:start()
             
         end
