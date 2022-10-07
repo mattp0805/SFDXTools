@@ -1,5 +1,5 @@
 obj = {name = "SFDXTools",
-        version = "1.0.0",
+        version = "1.0.1",
         author = { name = "Matt Port", email = "mattp0@duck.com" }
         }
 function obj:init()
