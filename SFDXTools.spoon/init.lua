@@ -6,6 +6,21 @@ obj.author = { name = "Matt Port", email = "mattp0@duck.com" }
 
 obj.SFDXPATH = "/usr/local/bin/sfdx"
 json = "--json"
+obj.ALERTSTYLE = {
+    strokeWidth  = 2,
+    strokeColor = { white = 1, alpha = 1 },
+    fillColor   = { white = 0, alpha = 0.75 },
+    textColor = { white = 1, alpha = 1 },
+    textFont  = ".AppleSystemUIFont",
+    textSize  = 14,
+    radius = 27,
+    atScreenEdge = 1,
+    fadeInDuration = 0.15,
+    fadeOutDuration = 0.15,
+    padding = nil,
+}
+obj.ORGLISTDURATION = 6
+obj.MAPPING = {{ "cmd", "alt", "ctrl" }, "s"}
 
 function obj:init()
     w = {}
@@ -13,29 +28,30 @@ function obj:init()
     return setmetatable(w , self )
 end
 
-function showListOutput(exitCode, stdOut, stdErr)
-        -- manipulate string before output
-        print ("exit code " .. exitCode)
-        print("out " .. stdOut)
-        print("err " .. stdErr)
-        alertString = stdOut
-        hs.alert.show(alertString,
-        {
-            strokeWidth  = 2,
-            strokeColor = { white = 1, alpha = 1 },
-            fillColor   = { white = 0, alpha = 0.75 },
-            textColor = { white = 1, alpha = 1 },
-            textFont  = ".AppleSystemUIFont",
-            textSize  = 14,
-            radius = 27,
-            atScreenEdge = 1,
-            fadeInDuration = 0.15,
-            fadeOutDuration = 0.15,
-            padding = nil,
-        },
-        hs.screen.mainScreen(),
-        6  )    
+function sfdxList(exitCode, stdOut, stdErr)
+        if exitCode == 0 then
+            jsonResponse = hs.json.decode(stdOut)
+            print(jsonResponse.result.nonScratchOrgs[1])
+            print(stdOut)
+            alertString = stdOut
+            hs.alert.show(alertString, obj.ALERTSTYLE, hs.screen.mainScreen(), obj.ORGLISTDURATION )    
+                
+        else
+            hs.alert.show('Error: ' .. stdErr)
+        end 
+        
 end
+
+function sfdxOpen(exitCode, stdOut, stdErr)
+    if exitCode == 0 then
+       console.log('Opened org')
+    else
+        hs.alert.show('Error: ' .. stdErr)
+    end 
+    
+end
+
+
 
 function obj:startDialog()
     hs.focus()
@@ -44,19 +60,21 @@ function obj:startDialog()
         if text == 'list' then
             print(text)
             print(button)
-                t = nil
-                t = hs.task.new(obj.SFDXPATH, showListOutput, {'force:org:list', '--json'})
-                t:start()
-                    
+                
+                t = hs.task.new(obj.SFDXPATH, sfdxList, {'force:org:list', '--json'})
+                t:start()    
         else
-            hs.execute("sfdx force:org:open -u" .. text, true)
+                
+                t = hs.task.new(obj.SFDXPATH, sfdxOpen, {'force:org:open', text)
+                t:start()
+            
         end
     end
 end
 
-function obj:bindHotKeys(mapping)
-    spec = mapping[1]
-    key = mapping[2]
+function obj:bindHotKeys()
+    spec = obj.MAPPING[1]
+    key = obj.MAPPING[2]
     if hs.hotkey.assignable(spec,key) == true then
         hs.hotkey.bind(spec, key, function()
             obj:startDialog()
