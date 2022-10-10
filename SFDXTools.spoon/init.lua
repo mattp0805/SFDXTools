@@ -1,7 +1,7 @@
 obj = {}
 
 obj.name = "SFDXTools"
-obj.version = "1.0.2"
+obj.version = "1.0.3"
 obj.author = { name = "Matt Port", email = "mattp0@duck.com" }
 obj.homepage = "https://www.github.com/mattp0805/SFDXTools"
 
@@ -34,13 +34,22 @@ end
 function sfdxList(exitCode, stdOut, stdErr)
         if exitCode == 0 then
             jsonResponse = hs.json.decode(stdOut)
-            print(jsonResponse.result.nonScratchOrgs[1])
-            print(stdOut)
+            nonScratchOrgs = {}
+            scratchOrgs = jsonResponse.result.scratchOrgs
+            for i, org in ipairs(jsonResponse.result.nonScratchOrgs) do
+                -- print(i, org)
+                for k, v in pairs(org) do
+                    
+                    nonScratchOrgs[tostring(k)] = v
+                    print(nonScratchOrgs["username"])
+                    -- print(nonScratchOrgs[k])
+                end
+            end
             alertString = stdOut
-            hs.alert.show(alertString, obj.ALERTSTYLE, hs.screen.mainScreen(), obj.ORGLISTDURATION )    
+            --hs.alert.show(alertString, obj.ALERTSTYLE, hs.screen.mainScreen(), obj.ORGLISTDURATION )    
                 
         else
-            hs.alert.show('Error: ' .. stdErr)
+            hs.alert.show('Error: Ex' .. stdErr)
         end 
         
 end
@@ -49,7 +58,7 @@ function sfdxOpen(exitCode, stdOut, stdErr)
     if exitCode == 0 then
        console.log('Opened org')
     else
-        hs.alert.show('Error: ' .. stdErr)
+        -- hs.alert.show('Error: ' .. stdErr)
     end 
     
 end
