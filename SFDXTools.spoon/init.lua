@@ -1,11 +1,12 @@
 obj = {}
 
 obj.name = "SFDXTools"
-obj.version = "1.0.1"
+obj.version = "1.0.2"
 obj.author = { name = "Matt Port", email = "mattp0@duck.com" }
+obj.homepage = "https://www.github.com/mattp0805/SFDXTools"
 
+obj.MAPPING = {{ "cmd", "alt", "ctrl" }, "s"}
 obj.SFDXPATH = "/usr/local/bin/sfdx"
-json = "--json"
 obj.ALERTSTYLE = {
     strokeWidth  = 2,
     strokeColor = { white = 1, alpha = 1 },
@@ -19,8 +20,10 @@ obj.ALERTSTYLE = {
     fadeOutDuration = 0.15,
     padding = nil,
 }
+
 obj.ORGLISTDURATION = 6
-obj.MAPPING = {{ "cmd", "alt", "ctrl" }, "s"}
+
+
 
 function obj:init()
     w = {}
