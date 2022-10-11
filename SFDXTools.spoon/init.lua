@@ -11,12 +11,6 @@ obj.author = "Matt Port <mattp0@duck.com>"
 obj.homepage = "https://github.com/mattp0805/SFDXTools"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
 
---- SFDXTools.MAPPING
---- Variable
---- A table containing a the modifier and hotkey for launching the startDialog function.
---- Default = {{ "cmd", "alt", "ctrl" }, "s"}
-
-obj.MAPPING = {{ "cmd", "alt", "ctrl" }, "s"}
 
 --- SFDXTools.SFDXPATH
 --- Variable
@@ -35,18 +29,19 @@ obj.ALERTSTYLE = {
     strokeColor = { white = 1, alpha = 1 },
     fillColor   = { white = 0, alpha = 0.75 },
     textColor = { white = 1, alpha = 1 },
-    textFont  = ".AppleSystemUIFont",
-    textSize  = 14,
+    textFont  = "PT Mono",
+    textSize  = 10,
     radius = 27,
     atScreenEdge = 1,
     fadeInDuration = 0.15,
     fadeOutDuration = 0.15,
-    padding = nil,
+    padding = nil, 
 }
 
 --- SFDXTools.ORGLISTDURATION
 --- Variable
 --- An integer defining the duration for which the list shown by startDialog shows on screen, in seconds. 
+
 obj.ORGLISTDURATION = 6
 
 
@@ -57,9 +52,21 @@ function obj:init()
     return setmetatable(w , self )
 end
 
-local function writeLine(name)
-    local newLine = name .. " \t\t\t\t\t\t\t " .. org.connectedStatus .. "\n"  
-    return newLine
+local function writeLine(name, status)
+    if name ~= nil or status ~= nil then
+        numOfSpaces = 50 - string.len(name)
+        spaces = ""
+        i = 0
+        while  i < numOfSpaces do
+            spaces = spaces .. " "
+            i = i + 1 
+        end
+        local newLine = name .. spaces .. status .. "\n"
+        return newLine
+    else 
+        return ""
+    end 
+end 
 
 local function sfdxList(exitCode, stdOut, stdErr)
         if exitCode == 0 then
@@ -69,19 +76,17 @@ local function sfdxList(exitCode, stdOut, stdErr)
             alertString = "Non-Scratch Orgs \n"
             for i, org in ipairs(jsonResponse.result.nonScratchOrgs) do
                 if org.alias == nil then
-                    alertString = alertString .. writeLine(org.username)
+                    alertString = alertString .. writeLine(org.username, org.connectedStatus)
                 else 
-                    alertString = alertString .. writeLine(org.alias)
-            end
+                    alertString = alertString .. writeLine(org.alias, org.connectedStatus)
+                end
 --[[            for i, org in ipairs(jsonResponse.result.scratchOrgs) do
                 for k, v in pairs(org) do
                     scratchOrgs[k] = v
-                end
+                end]]--
             end
-]]--
-            print(alertString)
-            --hs.alert.show(alertString, obj.ALERTSTYLE, hs.screen.mainScreen(), obj.ORGLISTDURATION )    
-                
+           hs.alert.show(alertString, obj.ALERTSTYLE, hs.screen.mainScreen(), obj.ORGLISTDURATION)    
+           
         else
             hs.alert.show('Error: Ex' .. stdErr)
         end 
@@ -97,41 +102,40 @@ local function sfdxOpen(exitCode, stdOut, stdErr)
     
 end
 
-
-
 local function startDialog()
     hs.focus()
     button, text = hs.dialog.textPrompt("SFDX", "Enter org to open", "list", "Open", "Cancel", false)
     if button == 'Open' then
         if text == 'list' then
-
-            print(text)
-            print(button)
-                
                 t = hs.task.new(obj.SFDXPATH, sfdxList, {'force:org:list', '--json'})
                 t:start()    
         else
-                
-                t = hs.task.new(obj.SFDXPATH, sfdxOpen, {'force:org:open', text})
+                t = hs.task.new(obj.SFDXPATH, sfdxOpen, {'force:org:open', '-u', text})
                 t:start()
             
         end
     end
 end
 
---- SFDXTools:bindHotkeys()
+--- SFDXTools:bindHotkeys
 --- Method
---- Binds hotkeys in MAPPING variable to the startDialog function.
+--- Binds hotkeys to the startDialog function.
+--- Parameters:
+---  * mapping - A table containing a table of modifiers and a hotkey for launching the startDialog function.
+--- Returns
+--- * A boolean, true if the mapping was successful.
 
-function obj:bindHotKeys()
-    spec = obj.MAPPING[1]
-    key = obj.MAPPING[2]
+function obj:bindHotKeys(mapping)
+    spec = mapping[1]
+    key = mapping[2]
     if hs.hotkey.assignable(spec,key) == true then
         hs.hotkey.bind(spec, key, function()
             startDialog()
         end)
+        return true
         else 
         print("Could not bind keys, try a different combination")
+        return false
     end
 end 
 
