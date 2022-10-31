@@ -6,7 +6,7 @@ local obj = {}
 
 -- Metadata
 obj.name = "SFDXTools"
-obj.version = "1.2.0"
+obj.version = "1.1.2"
 obj.author = "Matt Port <mattp0@duck.com>"
 obj.homepage = "https://github.com/mattp0805/SFDXTools"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
