@@ -6,7 +6,7 @@ local obj = {}
 
 -- Metadata
 obj.name = "SFDXTools"
-obj.version = "1.1.0"
+obj.version = "1.1.1"
 obj.author = "Matt Port <mattp0@duck.com>"
 obj.homepage = "https://github.com/mattp0805/SFDXTools"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
@@ -117,13 +117,13 @@ local function startDialog()
     end
 end
 
---- SFDXTools:bindHotkeys
+--- SFDXTools:bindHotkeys(mapping)
 --- Method
 --- Binds hotkeys to the startDialog function.
 --- Parameters:
 ---  * mapping - A table containing a table of modifiers and a hotkey for launching the startDialog function.
---- Returns
---- * A boolean, true if the mapping was successful.
+--- Returns:
+--- * A boolean, true if the mapping was successful, otherwise false.
 
 function obj:bindHotKeys(mapping)
     spec = mapping[1]
