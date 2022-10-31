@@ -6,7 +6,7 @@ local obj = {}
 
 -- Metadata
 obj.name = "SFDXTools"
-obj.version = "1.1.1"
+obj.version = "1.2.0"
 obj.author = "Matt Port <mattp0@duck.com>"
 obj.homepage = "https://github.com/mattp0805/SFDXTools"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
@@ -44,8 +44,6 @@ obj.ALERTSTYLE = {
 
 obj.ORGLISTDURATION = 6
 
-
-
 function obj:init()
     w = {}
     self.__index = self
@@ -80,10 +78,6 @@ local function sfdxList(exitCode, stdOut, stdErr)
                 else 
                     alertString = alertString .. writeLine(org.alias, org.connectedStatus)
                 end
---[[            for i, org in ipairs(jsonResponse.result.scratchOrgs) do
-                for k, v in pairs(org) do
-                    scratchOrgs[k] = v
-                end]]--
             end
            hs.alert.show(alertString, obj.ALERTSTYLE, hs.screen.mainScreen(), obj.ORGLISTDURATION)    
            
@@ -97,7 +91,7 @@ local function sfdxOpen(exitCode, stdOut, stdErr)
     if exitCode == 0 then
        console.log('Opened org')
     else
-        -- hs.alert.show('Error: ' .. stdErr)
+        hs.alert.show('Error: ' .. stdErr)
     end 
     
 end
