@@ -82,7 +82,7 @@ local function sfdxList(exitCode, stdOut, stdErr)
            hs.alert.show(alertString, obj.ALERTSTYLE, hs.screen.mainScreen(), obj.ORGLISTDURATION)    
            
         else
-            hs.alert.show('Error: Ex' .. stdErr)
+            hs.alert.show(stdErr)
         end 
         
 end
@@ -91,14 +91,14 @@ local function sfdxOpen(exitCode, stdOut, stdErr)
     if exitCode == 0 then
        console.log('Opened org')
     else
-        hs.alert.show('Error: ' .. stdErr)
+        hs.alert.show(stdErr)
     end 
     
 end
 
 local function startDialog()
     hs.focus()
-    button, text = hs.dialog.textPrompt("SFDX", "Enter org to open", "list", "Open", "Cancel", false)
+    button, text = hs.dialog.textPrompt("SFDX", "Enter org alias/username to open or 'list' to display all Non-Scratch Orgs", "list", "Open", "Cancel", false)
     if button == 'Open' then
         if text == 'list' then
                 t = hs.task.new(obj.SFDXPATH, sfdxList, {'force:org:list', '--json'})
@@ -106,7 +106,6 @@ local function startDialog()
         else
                 t = hs.task.new(obj.SFDXPATH, sfdxOpen, {'force:org:open', '-u', text})
                 t:start()
-            
         end
     end
 end
