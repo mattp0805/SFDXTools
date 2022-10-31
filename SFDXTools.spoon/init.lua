@@ -6,7 +6,7 @@ local obj = {}
 
 -- Metadata
 obj.name = "SFDXTools"
-obj.version = "1.1.1"
+obj.version = "1.1.2"
 obj.author = "Matt Port <mattp0@duck.com>"
 obj.homepage = "https://github.com/mattp0805/SFDXTools"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
@@ -44,8 +44,6 @@ obj.ALERTSTYLE = {
 
 obj.ORGLISTDURATION = 6
 
-
-
 function obj:init()
     w = {}
     self.__index = self
@@ -80,15 +78,11 @@ local function sfdxList(exitCode, stdOut, stdErr)
                 else 
                     alertString = alertString .. writeLine(org.alias, org.connectedStatus)
                 end
---[[            for i, org in ipairs(jsonResponse.result.scratchOrgs) do
-                for k, v in pairs(org) do
-                    scratchOrgs[k] = v
-                end]]--
             end
            hs.alert.show(alertString, obj.ALERTSTYLE, hs.screen.mainScreen(), obj.ORGLISTDURATION)    
            
         else
-            hs.alert.show('Error: Ex' .. stdErr)
+            hs.alert.show(stdErr)
         end 
         
 end
@@ -97,14 +91,14 @@ local function sfdxOpen(exitCode, stdOut, stdErr)
     if exitCode == 0 then
        console.log('Opened org')
     else
-        -- hs.alert.show('Error: ' .. stdErr)
+        hs.alert.show(stdErr)
     end 
     
 end
 
 local function startDialog()
     hs.focus()
-    button, text = hs.dialog.textPrompt("SFDX", "Enter org to open", "list", "Open", "Cancel", false)
+    button, text = hs.dialog.textPrompt("SFDX", "Enter org alias/username to open or 'list' to display all Non-Scratch Orgs", "list", "Open", "Cancel", false)
     if button == 'Open' then
         if text == 'list' then
                 t = hs.task.new(obj.SFDXPATH, sfdxList, {'force:org:list', '--json'})
@@ -112,7 +106,6 @@ local function startDialog()
         else
                 t = hs.task.new(obj.SFDXPATH, sfdxOpen, {'force:org:open', '-u', text})
                 t:start()
-            
         end
     end
 end
