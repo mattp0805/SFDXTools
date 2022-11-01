@@ -20,7 +20,7 @@ To configure Hammerspoon, you need to edit the **init.lua** file in *~/.hammersp
 
 As described in the docs.json file, there are a few properties and methods available to the end user including the style of the List popup, and the duration that it stays on screen. I won’t describe them all here, but will explain the basic hotkey setup. 
 
-1. Load the SDFXTools Spoon by adding `hs.loadSpoon("SFDXTools”)` at the bottom of your **init.lua**.
+1. Load the SDFXTools Spoon by adding `hs.loadSpoon("SFDXTools")` at the bottom of your **init.lua**.
 2. Enter a new line that reads `spoon.SFDXTools:bindHotKeys({{ "cmd", "alt", "ctrl" }, "s"})`. This will bind the shortcut Command,Option,Control + S to the modal launcher.
 3. You can change the binding by passing a different combination of keys, this will always be in the form of a table containing two items, a table of special keys and a standalone character. E.g. `{{"cmd", "alt"}, "l"}` 
 
