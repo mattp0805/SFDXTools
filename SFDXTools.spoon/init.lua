@@ -89,7 +89,7 @@ end
 
 local function sfdxOpen(exitCode, stdOut, stdErr)
     if exitCode == 0 then
-       console.log('Opened org')
+       print('Opened org')
     else
         hs.alert.show(stdErr)
     end 
@@ -102,7 +102,7 @@ local function startDialog()
     if button == 'Open' then
         if text == 'list' then
                 t = hs.task.new(obj.SFDXPATH, sfdxList, {'force:org:list', '--json'})
-                t:start()    
+                t:start()     
         else
                 t = hs.task.new(obj.SFDXPATH, sfdxOpen, {'force:org:open', '-u', text})
                 t:start()
@@ -126,7 +126,7 @@ function obj:bindHotKeys(mapping)
             startDialog()
         end)
         return true
-        else 
+    else 
         print("Could not bind keys, try a different combination")
         return false
     end
